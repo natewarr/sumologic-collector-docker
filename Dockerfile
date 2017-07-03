@@ -8,12 +8,14 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update --quiet && \
  apt-get upgrade --quiet --force-yes -y && \
  apt-get install --quiet --force-yes -y wget && \
- wget -q -O /tmp/collector.deb https://collectors.sumologic.com/rest/download/deb/64 && \
+ wget -q -O /tmp/collector.deb https://nite-events.sumologic.net/rest/download/deb/64?version=19.204-1 && \
  dpkg -i /tmp/collector.deb && \
  rm /tmp/collector.deb && \
  apt-get remove --quiet --force-yes -y wget && \
  apt-get clean --quiet && \
- rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+ rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
+ echo 'docker.maxPerContainerConnections = 100' >> /opt/SumoCollector/config/collector.properties
 
-COPY run.sh run.sh 
+COPY run.sh run.sh
+
 ENTRYPOINT ["/bin/bash", "run.sh"]
